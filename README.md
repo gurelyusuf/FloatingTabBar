@@ -2,6 +2,8 @@
 
 A customizable floating tab bar package for SwiftUI apps.
 
+![Screenshot 1](./Assets/1.png)
+
 ## Features
 
 - Customizable floating tab bar with center action button

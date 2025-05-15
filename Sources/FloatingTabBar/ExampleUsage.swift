@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+//import FloatingTabBar
 
 /// Example enum showing how to implement FloatingTabProtocol
 public enum ExampleTab: String, CaseIterable, FloatingTabProtocol {
@@ -37,17 +38,13 @@ public struct ExampleTabBarView: View {
         }) { tab, _ in
             switch tab {
             case .home:
-                Text("Home View")
-                    .font(.largeTitle)
+                HomeTabView()
             case .search:
-                Text("Search View")
-                    .font(.largeTitle)
+                SearchTabView()
             case .favorites:
-                Text("Favorites View")
-                    .font(.largeTitle)
+                FavoritesTabView()
             case .settings:
-                Text("Settings View")
-                    .font(.largeTitle)
+                SettingsTabView()
             }
         }
         .ignoresSafeArea(edges: .bottom)
@@ -67,7 +64,75 @@ public struct ExampleTabBarView: View {
         config.isTranslucent = true
         config.createButtonColor = .blue
         config.createButtonSymbol = "plus"
+        config.enablePopToRoot = true
         return config
+    }
+}
+
+// Example tab content views
+struct HomeTabView: View {
+    var body: some View {
+        List {
+            NavigationLink("Home Detail", value: "Detail")
+        }
+        .navigationTitle("Home")
+        .navigationDestination(for: String.self) { value in
+            VStack {
+                Text(value)
+                    .font(.largeTitle)
+                    .padding()
+                
+                if value == "Detail" {
+                    List {
+                        NavigationLink("More Details", value: "More")
+                        NavigationLink("Sub Details", value: "Sub")
+                    }
+                }
+            }
+            .navigationTitle(value)
+        }
+    }
+}
+
+struct SearchTabView: View {
+    var body: some View {
+        List {
+            NavigationLink("Search Results", value: "Results")
+        }
+        .navigationTitle("Search")
+        .navigationDestination(for: String.self) { value in
+            Text(value)
+                .font(.largeTitle)
+                .navigationTitle(value)
+        }
+    }
+}
+
+struct FavoritesTabView: View {
+    var body: some View {
+        List {
+            NavigationLink("Favorite Items", value: "Items")
+        }
+        .navigationTitle("Favorites")
+        .navigationDestination(for: String.self) { value in
+            Text(value)
+                .font(.largeTitle)
+                .navigationTitle(value)
+        }
+    }
+}
+
+struct SettingsTabView: View {
+    var body: some View {
+        List {
+            NavigationLink("Account", value: "Account")
+        }
+        .navigationTitle("Settings")
+        .navigationDestination(for: String.self) { value in
+            Text(value)
+                .font(.largeTitle)
+                .navigationTitle(value)
+        }
     }
 }
 
