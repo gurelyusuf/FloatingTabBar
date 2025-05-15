@@ -1,9 +1,42 @@
 # FloatingTabBar
 
-A customizable floating tab bar package for SwiftUI apps.
+<p align="left">
+<a href="https://www.swift.org"><img src="https://img.shields.io/badge/Language-Swift%205.9-%23DE5D43"></a>
+<a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/Platform-iOS%2017.0%2B-%2359ABE1"></a>
+<a href="https://developer.apple.com/documentation/SwiftUI"><img src="https://img.shields.io/badge/Framework-SwiftUI-%233B82F7"></a>
+<a href="https://www.swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-Compatible-%23FF149367"></a>
+<a href="https://en.wikipedia.org/wiki/MIT_License/"><img src="https://img.shields.io/badge/license-mit-brightgreen.svg"></a>
+</p>
 
-![Screenshot 1](./Assets/1.png)
+A customizable floating SwiftUI tab bar component, designed to work like [`TabView`](https://developer.apple.com/documentation/swiftui/tabview) extension.
 
+<div style="display: flex; justify-content: space-between;">
+  <img src="./Assets/usage.mp4" alt="Usage" width="30%" />
+  <img src="./Assets/1.png" alt="Screenshot 1" width="30%" />
+  <img src="./Assets/2.png" alt="Screenshot 2" width="30%" />
+</div>
+
+## Installation
+
+#### Swift Package Manager
+
+Add the following line to the dependencies in `Package.swift`, to use the `AFTabBar` in a SPM project:
+
+```swift
+.package(url: "https://github.com/gurelyusuf/AF-TabBar", from: "0.0.1"),
+```
+
+Add `import AFTabBar` into your source code to use `TabBar`.
+
+#### Xcode
+
+Go to `File > Add Package Dependencies...` and paste the repo's URL:
+
+```
+https://github.com/gurelyusuf/AF-TabBar.git
+```
+
+#
 ## Features
 
 - Customizable floating tab bar with center action button
@@ -98,7 +131,7 @@ private func configureTabBar() -> FloatingTabConfig {
     config.isTranslucent = true
     config.createButtonColor = .accentColor
     config.createButtonSymbol = "plus"
-    // Add more customizations as needed
+    config.enablePopToRoot = true
     return config
 }
 
@@ -124,6 +157,9 @@ The `FloatingTabConfig` struct provides the following customization options:
 - `createButtonColor`: Color of the center create button
 - `createButtonSymbol`: SF Symbol name for the create button
 - `createButtonTint`: Tint color for the create button symbol
+- `enablePopToRoot`: Enable pop to root functionality
+
+
 
 ## Hide/Show Tab Bar
 
