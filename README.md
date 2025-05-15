@@ -16,27 +16,7 @@ A customizable floating SwiftUI tab bar component, designed to work like [`TabVi
   <img src="./Assets/2.png" alt="Screenshot 2" width="30%" />
 </div>
 
-## Installation
 
-#### Swift Package Manager
-
-Add the following line to the dependencies in `Package.swift`, to use the `AFTabBar` in a SPM project:
-
-```swift
-.package(url: "https://github.com/gurelyusuf/AF-TabBar", from: "0.0.1"),
-```
-
-Add `import AFTabBar` into your source code to use `TabBar`.
-
-#### Xcode
-
-Go to `File > Add Package Dependencies...` and paste the repo's URL:
-
-```
-https://github.com/gurelyusuf/AF-TabBar.git
-```
-
-#
 ## Features
 
 - Customizable floating tab bar with center action button
@@ -44,6 +24,7 @@ https://github.com/gurelyusuf/AF-TabBar.git
 - Split tab layout
 - Support for translucent backgrounds
 - Hide/show tab bar functionality
+- Pop to root functionality
 - iOS 17.0+ support
 
 ## Installation
