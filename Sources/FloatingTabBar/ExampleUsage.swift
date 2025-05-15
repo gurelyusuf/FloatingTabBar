@@ -24,7 +24,7 @@ public enum ExampleTab: String, CaseIterable, FloatingTabProtocol {
     }
 }
 
-/// Example view showing how to use FloatingTabView
+/// Example view showing how to use FloatingTabView with Pop to Root
 public struct ExampleTabBarView: View {
     @State private var activeTab: ExampleTab = .home
     @State private var showCreateSheet: Bool = false
@@ -35,19 +35,17 @@ public struct ExampleTabBarView: View {
         FloatingTabView(configureTabBar(), selection: $activeTab, onCreateTapped: {
             showCreateSheet = true
         }) { tab, _ in
-            switch tab {
-            case .home:
-                Text("Home View")
-                    .font(.largeTitle)
-            case .search:
-                Text("Search View")
-                    .font(.largeTitle)
-            case .favorites:
-                Text("Favorites View")
-                    .font(.largeTitle)
-            case .settings:
-                Text("Settings View")
-                    .font(.largeTitle)
+            Group {
+                switch tab {
+                case .home:
+                    HomeTabView()
+                case .search:
+                    SearchTabView()
+                case .favorites:
+                    FavoritesTabView()
+                case .settings:
+                    SettingsTabView()
+                }
             }
         }
         .ignoresSafeArea(edges: .bottom)
@@ -68,6 +66,83 @@ public struct ExampleTabBarView: View {
         config.createButtonColor = .blue
         config.createButtonSymbol = "plus"
         return config
+    }
+}
+
+// Example Tab Views with Navigation
+struct HomeTabView: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                NavigationLink("Go to Detail", destination: DetailView(title: "Home Detail"))
+                NavigationLink("Go to Another Detail", destination: DetailView(title: "Another Home Detail"))
+                NavigationLink("Go to Third Detail", destination: DetailView(title: "Third Home Detail"))
+            }
+            .navigationTitle("Home")
+        }
+    }
+}
+
+struct SearchTabView: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                NavigationLink("Search Result 1", destination: DetailView(title: "Search Result 1"))
+                NavigationLink("Search Result 2", destination: DetailView(title: "Search Result 2"))
+                NavigationLink("Search Result 3", destination: DetailView(title: "Search Result 3"))
+            }
+            .navigationTitle("Search")
+        }
+    }
+}
+
+struct FavoritesTabView: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                NavigationLink("Favorite Item 1", destination: DetailView(title: "Favorite Item 1"))
+                NavigationLink("Favorite Item 2", destination: DetailView(title: "Favorite Item 2"))
+                NavigationLink("Favorite Item 3", destination: DetailView(title: "Favorite Item 3"))
+            }
+            .navigationTitle("Favorites")
+        }
+    }
+}
+
+struct SettingsTabView: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                NavigationLink("Account Settings", destination: DetailView(title: "Account Settings"))
+                NavigationLink("Appearance", destination: DetailView(title: "Appearance Settings"))
+                NavigationLink("Notifications", destination: DetailView(title: "Notification Settings"))
+            }
+            .navigationTitle("Settings")
+        }
+    }
+}
+
+struct DetailView: View {
+    let title: String
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Text(title)
+                .font(.largeTitle)
+                .padding()
+            
+            Text("This is a detail view.")
+                .foregroundColor(.secondary)
+            
+            Text("Tap the tab again to pop to root")
+                .padding()
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(10)
+            
+            NavigationLink("Go Deeper", destination: DetailView(title: "Deeper Detail"))
+                .padding()
+        }
+        .navigationTitle(title)
     }
 }
 

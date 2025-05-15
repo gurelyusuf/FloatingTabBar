@@ -37,6 +37,7 @@ public struct FloatingTabConfig {
 @available(iOS 17.0, *)
 fileprivate class FloatingTabViewHelper: ObservableObject {
     @Published var hideTabBar: Bool = false
+    @Published var popToRootTrigger: UUID?
 }
 
 @available(iOS 17.0, *)
@@ -91,8 +92,10 @@ public struct FloatingTabView<Content: View, Value: CaseIterable & Hashable & Fl
                 TabView(selection: $selection) {
                     ForEach(Array(Value.allCases), id: \.hashValue) { tab in
                         SwiftUI.Tab(value: tab) {
-                            content(tab, tabBarSize.height)
-                                .toolbar(.hidden, for: .tabBar)
+                            ContentWithPopToRoot(helper: helper, tab: tab) {
+                                content(tab, tabBarSize.height)
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
                         }
                     }
                 }
@@ -100,14 +103,16 @@ public struct FloatingTabView<Content: View, Value: CaseIterable & Hashable & Fl
                 /// Tab View for iOS 17
                 TabView(selection: $selection) {
                     ForEach(Array(Value.allCases), id: \.hashValue) { tab in
-                        content(tab, tabBarSize.height)
-                            .tag(tab)
-                            .toolbar(.hidden, for: .tabBar)
+                        ContentWithPopToRoot(helper: helper, tab: tab) {
+                            content(tab, tabBarSize.height)
+                                .tag(tab)
+                                .toolbar(.hidden, for: .tabBar)
+                        }
                     }
                 }
             }
             
-            FloatingTabBar(config: config, activeTab: $selection, onCreateTapped: onCreateTapped)
+            FloatingTabBar(config: config, activeTab: $selection, helper: helper, onCreateTapped: onCreateTapped)
                 .padding(.horizontal, config.hPadding)
                 .padding(.bottom, config.bPadding)
                 .background(
@@ -128,12 +133,36 @@ public struct FloatingTabView<Content: View, Value: CaseIterable & Hashable & Fl
     }
 }
 
+// MARK: Navigation Stack Pop to Root Wrapper
+@available(iOS 17.0, *)
+fileprivate struct ContentWithPopToRoot<Content: View, Value: Hashable>: View {
+    @ObservedObject var helper: FloatingTabViewHelper
+    let tab: Value
+    let content: () -> Content
+    
+    @State private var navigationPath = NavigationPath()
+    
+    var body: some View {
+        NavigationStack(path: $navigationPath) {
+            content()
+        }
+        .onChange(of: helper.popToRootTrigger) { _, newValue in
+            guard helper.popToRootTrigger != nil else { return }
+            // Only pop if the trigger matches this tab
+            if helper.popToRootTrigger!.hashValue % 100 == tab.hashValue % 100 {
+                navigationPath.removeLast(navigationPath.count)
+            }
+        }
+    }
+}
+
 // MARK: Tab Bar
 @available(iOS 17.0, *)
 fileprivate struct FloatingTabBar<Value: CaseIterable & Hashable & FloatingTabProtocol>: View where Value.AllCases: RandomAccessCollection {
     
     var config: FloatingTabConfig
     @Binding var activeTab: Value
+    @ObservedObject var helper: FloatingTabViewHelper
     var onCreateTapped: () -> Void
     
     /// For Tab Sliding Effect
@@ -229,18 +258,30 @@ fileprivate struct FloatingTabBar<Value: CaseIterable & Hashable & FloatingTabPr
                 }
             }
             .onTapGesture {
-                activeTab = tab
-                
-                // Only toggle if within array bounds
-                if index < toggleStates.count {
-                    toggleStates[index].toggle()
+                // If tab is already active, trigger pop to root
+                if activeTab == tab {
+                    // Generate a unique ID that includes the tab's hashValue
+                    let uniqueID = UUID()
+                    helper.popToRootTrigger = uniqueID
+                    
+                    // Haptic feedback for pop to root
+                    let generator = UIImpactFeedbackGenerator(style: .soft)
+                    generator.impactOccurred()
+                } else {
+                    // Normal tab switching
+                    activeTab = tab
+                    
+                    // Only toggle if within array bounds
+                    if index < toggleStates.count {
+                        toggleStates[index].toggle()
+                    }
+                    
+                    hapticsTrigger.toggle()
+                    
+                    // Standard haptic feedback for tab change
+                    let generator = UIImpactFeedbackGenerator(style: .medium)
+                    generator.impactOccurred()
                 }
-                
-                hapticsTrigger.toggle()
-                
-                // Simple haptic feedback that's available on all iOS 17+ devices
-                let generator = UIImpactFeedbackGenerator(style: .medium)
-                generator.impactOccurred()
             }
             .padding(.vertical, config.insetAmount)
     }
