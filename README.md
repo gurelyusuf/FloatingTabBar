@@ -46,18 +46,18 @@ dependencies: [
 ```swift
 import FloatingTabBar
 
-enum AppTab: String, CaseIterable, FloatingTabProtocol {
-    case dashboard = "Dashboard"
-    case transactions = "Transactions"
-    case analysis = "Analysis"
-    case profile = "Profile"
+public enum ExampleTab: String, CaseIterable, FloatingTabProtocol {
+    case home = "Home"
+    case search = "Search"
+    case favorites = "Favorites"
+    case settings = "Settings"
     
-    var symbolImage: String {
+    public var symbolImage: String {
         switch self {
-        case .dashboard: return "rectangle.grid.2x2.fill"
-        case .transactions: return "arrow.up.arrow.down"
-        case .analysis: return "chart.pie.fill"
-        case .profile: return "person.fill"
+        case .home: return "house.fill"
+        case .search: return "magnifyingglass"
+        case .favorites: return "heart.fill"
+        case .settings: return "gear"
         }
     }
 }
@@ -69,28 +69,30 @@ enum AppTab: String, CaseIterable, FloatingTabProtocol {
 import SwiftUI
 import FloatingTabBar
 
-struct ContentView: View {
-    @State private var activeTab: AppTab = .dashboard
+public struct ExampleTabBarView: View {
+    @State private var activeTab: ExampleTab = .home
     @State private var showCreateSheet: Bool = false
     
-    var body: some View {
-        FloatingTabView(selection: $activeTab, onCreateTapped: {
+    public init() {}
+    
+    public var body: some View {
+        FloatingTabView(configureTabBar(), selection: $activeTab, onCreateTapped: {
             showCreateSheet = true
-        }) { tab, bottomInset in
+        }) { tab, _ in
             switch tab {
-            case .dashboard:
-                Text("Dashboard View")
-            case .transactions:
-                Text("Transactions View")
-            case .analysis:
-                Text("Analysis View")
-            case .profile:
-                Text("Profile View")
+            case .home:
+                HomeTabView()
+            case .search:
+                SearchTabView()
+            case .favorites:
+                FavoritesTabView()
+            case .settings:
+                SettingsTabView()
             }
         }
         .ignoresSafeArea(edges: .bottom)
         .sheet(isPresented: $showCreateSheet) {
-            Text("Create View")
+            ExampleCreateView(isPresented: $showCreateSheet)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
