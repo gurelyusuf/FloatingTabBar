@@ -133,3 +133,7 @@ You can hide or show the tab bar using the `hideFloatingTabBar` modifier:
 Text("Some content")
     .hideFloatingTabBar(true) // Hides the tab bar
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
