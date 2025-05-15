@@ -1,12 +1,12 @@
 # FloatingTabBar
 
-A customizable floating tab bar package for SwiftUI applications.
+A customizable floating tab bar package for SwiftUI apps.
 
 ## Features
 
 - Customizable floating tab bar with center action button
 - Tab animation effects with haptic feedback
-- Split tab layout (tabs divided equally on both sides of center button)
+- Split tab layout
 - Support for translucent backgrounds
 - Hide/show tab bar functionality
 - iOS 17.0+ support
@@ -131,7 +131,3 @@ You can hide or show the tab bar using the `hideFloatingTabBar` modifier:
 Text("Some content")
     .hideFloatingTabBar(true) // Hides the tab bar
 ```
-
-## License
-
-This package is available under the MIT license.
