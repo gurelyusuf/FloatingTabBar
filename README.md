@@ -11,7 +11,7 @@
 A customizable floating SwiftUI tab bar component, designed to work like [`TabView`](https://developer.apple.com/documentation/swiftui/tabview) extension.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="./Assets/usage.mp4" alt="Usage" width="30%" />
+  <img src="./Assets/usage.gif" alt="Usage" width="30%" />
   <img src="./Assets/1.png" alt="Screenshot 1" width="30%" />
   <img src="./Assets/2.png" alt="Screenshot 2" width="30%" />
 </div>
