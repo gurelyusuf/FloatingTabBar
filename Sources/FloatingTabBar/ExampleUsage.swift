@@ -72,53 +72,45 @@ public struct ExampleTabBarView: View {
 // Example Tab Views with Navigation
 struct HomeTabView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                NavigationLink("Go to Detail", destination: DetailView(title: "Home Detail"))
-                NavigationLink("Go to Another Detail", destination: DetailView(title: "Another Home Detail"))
-                NavigationLink("Go to Third Detail", destination: DetailView(title: "Third Home Detail"))
-            }
-            .navigationTitle("Home")
+        List {
+            NavigationLink("Go to Detail", destination: DetailView(title: "Home Detail"))
+            NavigationLink("Go to Another Detail", destination: DetailView(title: "Another Home Detail"))
+            NavigationLink("Go to Third Detail", destination: DetailView(title: "Third Home Detail"))
         }
+        .navigationTitle("Home")
     }
 }
 
 struct SearchTabView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                NavigationLink("Search Result 1", destination: DetailView(title: "Search Result 1"))
-                NavigationLink("Search Result 2", destination: DetailView(title: "Search Result 2"))
-                NavigationLink("Search Result 3", destination: DetailView(title: "Search Result 3"))
-            }
-            .navigationTitle("Search")
+        List {
+            NavigationLink("Search Result 1", destination: DetailView(title: "Search Result 1"))
+            NavigationLink("Search Result 2", destination: DetailView(title: "Search Result 2"))
+            NavigationLink("Search Result 3", destination: DetailView(title: "Search Result 3"))
         }
+        .navigationTitle("Search")
     }
 }
 
 struct FavoritesTabView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                NavigationLink("Favorite Item 1", destination: DetailView(title: "Favorite Item 1"))
-                NavigationLink("Favorite Item 2", destination: DetailView(title: "Favorite Item 2"))
-                NavigationLink("Favorite Item 3", destination: DetailView(title: "Favorite Item 3"))
-            }
-            .navigationTitle("Favorites")
+        List {
+            NavigationLink("Favorite Item 1", destination: DetailView(title: "Favorite Item 1"))
+            NavigationLink("Favorite Item 2", destination: DetailView(title: "Favorite Item 2"))
+            NavigationLink("Favorite Item 3", destination: DetailView(title: "Favorite Item 3"))
         }
+        .navigationTitle("Favorites")
     }
 }
 
 struct SettingsTabView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                NavigationLink("Account Settings", destination: DetailView(title: "Account Settings"))
-                NavigationLink("Appearance", destination: DetailView(title: "Appearance Settings"))
-                NavigationLink("Notifications", destination: DetailView(title: "Notification Settings"))
-            }
-            .navigationTitle("Settings")
+        List {
+            NavigationLink("Account Settings", destination: DetailView(title: "Account Settings"))
+            NavigationLink("Appearance", destination: DetailView(title: "Appearance Settings"))
+            NavigationLink("Notifications", destination: DetailView(title: "Notification Settings"))
         }
+        .navigationTitle("Settings")
     }
 }
 

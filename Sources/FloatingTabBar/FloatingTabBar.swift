@@ -37,7 +37,7 @@ public struct FloatingTabConfig {
 @available(iOS 17.0, *)
 fileprivate class FloatingTabViewHelper: ObservableObject {
     @Published var hideTabBar: Bool = false
-    @Published var popToRootTrigger: UUID?
+    @Published var tabPopTriggers: [AnyHashable: UUID] = [:]
 }
 
 @available(iOS 17.0, *)
@@ -86,29 +86,14 @@ public struct FloatingTabView<Content: View, Value: CaseIterable & Hashable & Fl
     
     public var body: some View {
         ZStack(alignment: .bottom) {
-            // Using if available for iOS 18 features
-            if #available(iOS 18, *) {
-                /// New Tab View for iOS 18+
-                TabView(selection: $selection) {
-                    ForEach(Array(Value.allCases), id: \.hashValue) { tab in
-                        SwiftUI.Tab(value: tab) {
-                            ContentWithPopToRoot(helper: helper, tab: tab) {
-                                content(tab, tabBarSize.height)
-                                    .toolbar(.hidden, for: .tabBar)
-                            }
-                        }
+            // Wrap each tab content in NavigationStack with pop to root capability
+            TabView(selection: $selection) {
+                ForEach(Array(Value.allCases), id: \.hashValue) { tab in
+                    TabContentView(helper: helper, tab: tab) {
+                        content(tab, tabBarSize.height)
                     }
-                }
-            } else {
-                /// Tab View for iOS 17
-                TabView(selection: $selection) {
-                    ForEach(Array(Value.allCases), id: \.hashValue) { tab in
-                        ContentWithPopToRoot(helper: helper, tab: tab) {
-                            content(tab, tabBarSize.height)
-                                .tag(tab)
-                                .toolbar(.hidden, for: .tabBar)
-                        }
-                    }
+                    .tag(tab)
+                    .toolbar(.hidden, for: .tabBar)
                 }
             }
             
@@ -133,24 +118,23 @@ public struct FloatingTabView<Content: View, Value: CaseIterable & Hashable & Fl
     }
 }
 
-// MARK: Navigation Stack Pop to Root Wrapper
+// Tab content wrapper that handles pop to root
 @available(iOS 17.0, *)
-fileprivate struct ContentWithPopToRoot<Content: View, Value: Hashable>: View {
+fileprivate struct TabContentView<Content: View, Tab: Hashable>: View {
     @ObservedObject var helper: FloatingTabViewHelper
-    let tab: Value
-    let content: () -> Content
+    let tab: Tab
+    @ViewBuilder let content: () -> Content
     
-    @State private var navigationPath = NavigationPath()
+    @State private var navPath = NavigationPath()
     
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack(path: $navPath) {
             content()
         }
-        .onChange(of: helper.popToRootTrigger) { _, newValue in
-            guard helper.popToRootTrigger != nil else { return }
-            // Only pop if the trigger matches this tab
-            if helper.popToRootTrigger!.hashValue % 100 == tab.hashValue % 100 {
-                navigationPath.removeLast(navigationPath.count)
+        .onChange(of: helper.tabPopTriggers[tab]) { _, _ in
+            // When this tab's trigger UUID changes, reset the navigation path
+            withAnimation {
+                navPath = NavigationPath()
             }
         }
     }
@@ -260,13 +244,14 @@ fileprivate struct FloatingTabBar<Value: CaseIterable & Hashable & FloatingTabPr
             .onTapGesture {
                 // If tab is already active, trigger pop to root
                 if activeTab == tab {
-                    // Generate a unique ID that includes the tab's hashValue
-                    let uniqueID = UUID()
-                    helper.popToRootTrigger = uniqueID
+                    // Update the trigger for this specific tab
+                    helper.tabPopTriggers[tab] = UUID()
                     
                     // Haptic feedback for pop to root
                     let generator = UIImpactFeedbackGenerator(style: .soft)
                     generator.impactOccurred()
+                    
+                    print("Pop to root triggered for tab: \(tab)")
                 } else {
                     // Normal tab switching
                     activeTab = tab
