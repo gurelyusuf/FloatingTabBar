@@ -234,6 +234,8 @@ fileprivate struct FloatingTabBar<Value: CaseIterable & Hashable & FloatingTabPr
             // Create button
             Button(action: {
                 hapticsTrigger.toggle()
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
                 onCreateTapped()
             }) {
                 Image(systemName: config.createButtonSymbol)
